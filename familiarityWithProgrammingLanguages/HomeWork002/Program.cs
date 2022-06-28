@@ -1,11 +1,24 @@
-﻿Console.WriteLine("Задача 10: Напишите программу, которая принимает на вход трёхзначное число и на выходе показывает вторую цифру этого числа.");
+﻿int getSecondDigit(int number){
+    return number / 10 % 10;
+}
+
+Console.WriteLine("Задача 10: Напишите программу, которая принимает на вход трёхзначное число и на выходе показывает вторую цифру этого числа.");
 //456 -> 5
 //782 -> 8
 //918 -> 1
 Console.Write("Input number: ");
 int num = Convert.ToInt32(Console.ReadLine());
-Console.WriteLine($"the second digit is {num / 10 % 10}");
+Console.WriteLine($"the second digit is {getSecondDigit(num)}");
 
+
+void printThirdDigit(int number){
+    int res = number / 10 / 10 % 10;
+    if (res == 0){
+        Console.WriteLine("the third digit is missing.");
+    } else {
+        Console.WriteLine($"the third digit is {res}");
+    }
+}
 
 Console.WriteLine();
 Console.WriteLine("Задача 13: Напишите программу, которая выводит третью цифру заданного числа или сообщает, что третьей цифры нет.");
@@ -14,13 +27,14 @@ Console.WriteLine("Задача 13: Напишите программу, кот�
 //32679 -> 6
 Console.Write("Input number: ");
 num = Convert.ToInt32(Console.ReadLine());
-int res = num / 10 / 10 % 10;
-if (res == 0){
-    Console.WriteLine("the third digit is missing.");
-} else {
-    Console.WriteLine($"the third digit is {res}");
-}
+printThirdDigit(num);
 
+
+string checkDayOfWeek(int number){
+    if (number < 1 || number > 7) return "Error: wrong number.";
+    if (number == 6 || number == 7) return "Yes";
+    return "No";
+}
 
 Console.WriteLine();
 Console.WriteLine("Задача 15: Напишите программу, которая принимает на вход цифру, обозначающую день недели, и проверяет, является ли этот день выходным.");
@@ -29,8 +43,4 @@ Console.WriteLine("Задача 15: Напишите программу, кот�
 //1 -> нет
 Console.Write("Input number: ");
 num = Convert.ToInt32(Console.ReadLine());
-if (num == 6 || num == 7){
-    Console.WriteLine("Yes");
-} else {
-    Console.WriteLine("No");
-}
+Console.WriteLine(checkDayOfWeek(num));

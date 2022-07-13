@@ -16,5 +16,12 @@ Console.WriteLine();
 Console.WriteLine("Задача 38: Задайте массив вещественных чисел. Найдите разницу между максимальным и минимальным элементов массива.");
 Task38.Do();
 Console.WriteLine();
+
+
+Console.WriteLine("Задача 19: Напишите программу, которая принимает на вход пятизначное число и проверяет, является ли оно палиндромом.");
+Console.Write("Input number: ");
+Console.WriteLine($"Is palindrom? - {Task19.Do(Convert.ToInt32(Console.ReadLine()))}");
+Console.WriteLine();
+
 }
 }

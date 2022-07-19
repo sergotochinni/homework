@@ -21,19 +21,35 @@ namespace MyApp{
 56 8 4 24
 10 6 24 49
 */
-            int[,] arr1 = MyClass.CreateTwoDimensionalArray(5, 8, 0, 10);
+            Console.Write("First array. Inpun rows: ");
+            int rows1 = Convert.ToInt32(Console.ReadLine());
+            Console.Write("First array. Inpun columns: ");
+            int columns1 = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Second array. Inpun rows: ");
+            int rows2 = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Second array. Inpun columns: ");
+            int columns2 = Convert.ToInt32(Console.ReadLine());
+            if (columns1 != rows2) {
+                Console.WriteLine("Product is undefined. n columns of first matrix must equal to n rows of second matrix");
+                return;
+            }
+            int[,] arr1 = MyClass.CreateTwoDimensionalArray(rows1, columns1, 0, 10);
             Console.Write("First ");
             MyClass.PrintTwoDimensionalArray(arr1);
-            int rows = arr1.GetLength(0);
-            int columns = arr1.GetLength(1);
-            int[,] arr2 = MyClass.CreateTwoDimensionalArray(rows, columns, 0, 10);
+            int[,] arr2 = MyClass.CreateTwoDimensionalArray(rows2, columns2, 0, 10);
             Console.Write("Second ");
             MyClass.PrintTwoDimensionalArray(arr2);
-            int[,] result = new int[rows, columns];
-            //for every row
-            for (int i = 0; i < rows; i++){
-                for (int j = 0; j < columns; j++){
-                    result[i,j] = arr1[i,j] * arr2[i,j];
+            int[,] result = new int[rows1, columns2];
+            for (int i = 0; i < rows1; i++){
+                for (int j = 0; j < columns2; j++){
+                    result[i,j] = 0;
+                }
+            }
+            for (int i = 0; i < rows1; i++){
+                for (int j = 0; j < columns2; j++){
+                    for (int k = 0; k < columns1; k++){
+                        result[i,j] += arr1[i,k] * arr2[k,j];
+                    }
                 }
             }
             Console.Write("First Array * Second Array = ");

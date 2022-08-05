@@ -2,8 +2,15 @@
     public class MyClass{
 
         public static void printArray(string[] array){
-            Console.WriteLine("Array: [\"{0}\"]", string.Join("\", \"", array));
+            Console.WriteLine("Array: [{0}]", string.Join(", ", array.Select(n => "\"" + n + "\"")));
             return;
+        }
+
+        public static string[] append(string[] array, string value){
+            string[] result = new string[array.Length + 1];
+            array.CopyTo(result, 0);
+            result[array.Length] = value;
+            return result;
         }
 
         public static void Main(string[] args){
@@ -30,7 +37,15 @@
 
             printArray(mainArray);
 
-//            string[] resultArray;
+            string[] resultArray = new string[0];
+
+            for (int i=0; i<lenOfArray; i++){
+                if (mainArray[i].Length <= 3){
+                    resultArray = append(resultArray, mainArray[i]);
+                }
+            }
+
+            printArray(resultArray);
 
         }
     }

@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 )
 
 func printArray(array []string) {
@@ -24,6 +25,7 @@ func main() {
 	var (
 		mainArray  []string
 		lenOfArray int
+		err        error
 	)
 
 	exampleArray := []string{"hello", "2", "world", ":-)"}
@@ -41,7 +43,7 @@ func main() {
 		mainArray = make([]string, lenOfArray)
 		copy(mainArray, exampleArray)
 	} else {
-		lenOfArray, err := strconv.Atoi(text)
+		lenOfArray, err = strconv.Atoi(text)
 		if err != nil {
 			os.Exit(1)
 		}
@@ -58,7 +60,7 @@ func main() {
 	resultArray := make([]string, 0)
 
 	for i := 0; i < lenOfArray; i++ {
-		if len(mainArray[i]) <= 3 {
+		if utf8.RuneCountInString(mainArray[i]) <= 3 {
 			resultArray = append(resultArray, mainArray[i])
 		}
 	}

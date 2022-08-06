@@ -14,7 +14,7 @@
         }
 
         public static void Main(string[] args){
-            string[] exampleArray = new string[4]{"hello", "2", "world", ":-)"};
+            string[] exampleArray = {"hello", "2", "world", ":-)"};
 //            string[] exampleArray = {"1234", "1567", "-2", "computer science"};
 //            string[] exampleArray = {"Russia", "Denmark", "Kazan"};
             string[] mainArray;

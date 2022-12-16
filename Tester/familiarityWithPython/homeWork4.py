@@ -57,14 +57,15 @@ def makePolynom(k):
 #if abs(n) >= 1:
 #    polinom += str(n) + "*x" + ")"
 # for p = 0
-    n = random.randint(0, 9)
-    if n != 0:
-        polynom += str(n)
-    else:
-        polynom = polynom[:-3]
 # if all p = 0
     if len(polynom) < 2:
         polynom = str(random.randint(2, 9)) + "*x^1" + random.choice([' + ', ' - ']) + str(random.randint(2, 9))
+    else:
+        n = random.randint(0, 9)
+        if n != 0:
+            polynom += str(n)
+        else:
+            polynom = polynom[:-3]
     polynom += " = 0"
     return polynom
 

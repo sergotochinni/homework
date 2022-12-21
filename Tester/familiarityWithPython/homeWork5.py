@@ -1,7 +1,7 @@
 import random
 from os import path
 
-print("Напишите программу, удаляющую из текста все слова, содержащие 'абв'. \
+print("1. Напишите программу, удаляющую из текста все слова, содержащие 'абв'. \
 В тексте используется разделитель пробел.")
 random.seed()
 n = int(input('Enter number of words: ') or 10)
@@ -49,7 +49,7 @@ def decode(enc):
             num = ''
     return plain
 
-print('Реализуйте RLE алгоритм: реализуйте модуль сжатия и восстановления данных. \
+print('2. Реализуйте RLE алгоритм: реализуйте модуль сжатия и восстановления данных. \
 Входные и выходные данные хранятся в отдельных текстовых файлах.')
 fin = input('Enter the name of the file with the text (default: text_words.txt): ') or 'text_words.txt'
 fout = input('Enter the file name to record (default: text_code_words.txt): ') or  'text_code_words.txt'
@@ -83,3 +83,57 @@ else:
 
 print()
 
+def printTable(lst):
+    print('      ---------------------')
+    for i in range(0, 7, 3):
+        print(f'\t{lst[i+1]}\t{lst[i+2]}\t{lst[i+3]} ')
+        print('      ---------------------')
+    print('')
+
+def getMove(gamer, table):
+    while True:
+        p = input(f'Select a position {gamer}? ')
+        if len(p) > 1 or len(p) == 0:
+            print('Incorrect input \U000026D4. Are you sure you entered a correct number?')
+        elif p < '1' or p > '9':
+            print('Incorrect input \U000026D4. Are you sure you entered a correct number?')
+        elif table[int(p)] != 0:
+            print('This cell is already ocuppied\U0001F937')
+        else:
+            return int(p)
+    
+print('3. Создайте программу для игры в "Крестики-нолики". Поле 3x3. Игрок - игрок, без бота.')
+gamerX = '\U0000274C'
+gamerO = '\U00002B55'
+lst = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+pos = [0 for i in range(10)]
+printTable(lst)
+whoseMove = 'X'
+for i in range(9):
+    print('Enter a number from 1 to 9.')
+    if whoseMove == 'X':
+        move = getMove(gamerX, pos)
+        lst[move] = gamerX
+        pos[move] = 1
+        whoseMove = 'O'
+    else:
+        correctInput = False
+        move = getMove(gamerO, pos)
+        lst[move] = gamerO
+        pos[move] = -1
+        whoseMove = 'X'
+    printTable(lst)
+    win = [pos[1]+pos[2]+pos[3], pos[4]+pos[5]+pos[6], pos[7]+pos[8]+pos[9], pos[1]+pos[4]+pos[7], pos[2]+pos[5]+pos[8], \
+    pos[3]+pos[6]+pos[9], pos[1]+pos[5]+pos[9], pos[3]+pos[5]+pos[7]]
+    if 3 in win:
+        print(f'{gamerX} - WIN!')
+        break
+    if -3 in win:
+        print(f'{gamerO} - WIN!')
+        break
+else:
+    print('Drawn game!')
+
+print()
+
+print('')

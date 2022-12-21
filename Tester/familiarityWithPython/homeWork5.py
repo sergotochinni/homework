@@ -136,4 +136,57 @@ else:
 
 print()
 
-print('')
+print('4. Создайте программу для игры с конфетами человек против человека. \
+Условие задачи: На столе лежит 2021 конфета. Играют два игрока делая ход друг после друга. \
+Первый ход определяется жеребьёвкой. За один ход можно забрать не более чем 28 конфет. \
+Все конфеты оппонента достаются сделавшему последний ход. \
+Сколько конфет нужно взять первому игроку, чтобы забрать все конфеты у своего конкурента?')
+bot = int(input('Play with bot 1 - yes, 0 - no? '))
+if bot:
+    print('1 player - human, 2 playr - bot')
+else:
+    print('1 player - human, 2 playr - person')
+sweets = 2021
+max = sweets
+limit = 28
+win = False
+firstMove = True
+player = 'human'
+move = 0
+while not win:
+    print(f'There are {sweets} sweets on the table, you can take [1..{limit}]')
+    print(f'Player {player}`s move.')
+    correctMove = False
+    while not correctMove:
+        if player == 'bot':
+            playerMove = move
+            if firstMove:
+                firstMove = False
+                if move > max % (limit+1):
+                    move = limit + 1 - move
+                else:
+                    move = max % (limit+1) - move    
+            else:
+                move = limit + 1 - move
+            if move == 0:
+                move = random.randint(1, limit)
+                max = max - playerMove - move
+                firstMove = True
+            print(f'How many candies do you want {player}: {move}')
+        else:
+            move = int(input(f'How many candies do you want {player}: '))
+        if move > limit or move > sweets or move <=0:
+            print('Incorrect input \U000026D4. Are you sure you entered a correct number?')
+        else:
+            correctMove = True
+    sweets -= move
+    if sweets == 0:
+        print(f'The player {player} won!')
+        win = True
+    if player == 'human':
+        if bot:
+            player = 'bot'
+        else:
+            player = 'person'
+    else:
+        player = 'human'

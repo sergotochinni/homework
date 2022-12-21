@@ -172,7 +172,7 @@ while not win:
                 move = random.randint(1, limit)
                 max = max - playerMove - move
                 firstMove = True
-            print(f'How many candies do you want {player}: {move}')
+            print(f'The {player} took {move} candies')
         else:
             move = int(input(f'How many candies do you want {player}: '))
         if move > limit or move > sweets or move <=0:

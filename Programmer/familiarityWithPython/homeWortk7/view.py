@@ -44,7 +44,7 @@ def viewRecord(lst):
     print(f'Comment: {lst[3]}')
     print('='*80)
 
-def getRecord(lst=['','','','','']) -> list:
+def getRecord(lst=['','','','']) -> list:
     lst[0] = input(f'Enter new surname ({lst[0]}): ') or lst[0]
     lst[1] = input(f'Enter new name ({lst[1]}): ') or lst[1]
     lst[2] = input(f'Enter new phone ({lst[2]}): ') or lst[2]

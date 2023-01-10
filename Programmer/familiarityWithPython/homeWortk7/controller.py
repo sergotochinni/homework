@@ -24,7 +24,7 @@ def run():
                     lst = view.getRecord(model.getRecord(num))
                     model.changeRecord(num, lst)
             case 'i'|'I':
-                lst = view.getRecord()
+                lst = view.getRecord(['','','',''])
                 model.insertRecord(lst)
             case 'd'|'D':
                 num = model.getNumberOfRecords()

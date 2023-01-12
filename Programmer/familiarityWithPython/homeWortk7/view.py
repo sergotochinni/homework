@@ -2,7 +2,7 @@
 def get_pb_name() -> str:
     db_name = ''
     while db_name == '':
-        db_name = input('Enter file name (default: phone_book.txt): ') or 'phone_book.txt'
+        db_name = input('Enter file name (*.txt, *.csv or *.sqlite default: phone_book.txt): ') or 'phone_book.txt'
     return db_name
 
 def print_pb(lst):

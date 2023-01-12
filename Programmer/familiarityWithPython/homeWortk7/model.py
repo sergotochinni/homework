@@ -1,4 +1,5 @@
 import os
+import sqlite3
 
 #переменная с текстом ошибки для возвращения по запросу
 error = ''
@@ -35,6 +36,32 @@ def init(file_name: str) -> bool:
                 f.write('Ford;Prefect;1234567890;Betelgeuse\n')
                 f.write('VeryVeryLongSurName;VeryVeryLongName;3.14159265359;VeryVeryVeryVeryLongComment\n')
                 f.close()
+            if os.path.splitext(file_name)[1] == '.sqlite':
+                f = sqlite3.connect(file_name)
+                create_users_table = """
+                                    CREATE TABLE users (
+                                        surname TEXT,
+                                        name TEXT,
+                                        phone TEXT,
+                                        comment TEXT);
+                                    """
+                cursor = f.cursor()
+                cursor.execute(create_users_table)
+                f.commit()
+                create_users = """
+                                INSERT INTO
+                                    users (surname, name, phone, comment)
+                                VALUES
+                                    ('McMillan', 'Tricia', '267709', 'Section ZZ9 Plural Z Alpha'),
+                                    ('Dent', 'Arthur', '267709', 'Section ZZ9 Plural Z Alpha'),
+                                    ('Ford', 'Prefect', '1234567890', 'Betelgeuse'),
+                                    ('VeryVeryLongSurName', 'VeryVeryLongName', '3.14159265359', 'VeryVeryVeryVeryLongComment');
+                                """
+                cursor = f.cursor()
+                cursor.execute(create_users)
+                f.commit()
+                cursor.close()
+                f.close()
         else:
             error = 'File not found.'
             return False
@@ -48,9 +75,10 @@ def init(file_name: str) -> bool:
             db_type = 'csv'
             db_data = readDbFromCsv()
             print('csv init')
-    #     case 'db':
-    #         db_type = 3
-    #         print('sql init')
+        case *path, '.sqlite':
+            db_type = 'sqlite'
+            db_data = readDbFromSqlite()
+            print('sql init')
         case _:
             error = 'Error file type.'
             return False
@@ -80,17 +108,55 @@ def readDbFromCsv() -> list:
     f.close()
     return db
 
+def readDbFromSqlite() -> list:
+    db = []
+    f = sqlite3.connect(db_file)
+    select_users = "SELECT * FROM users;"
+    cursor = f.cursor()
+    cursor.execute(select_users)
+    db = list(cursor.fetchall())
+    cursor.close()
+    f.close()
+    return db
+
 def read_db() -> list:
     return db_data
 
 def write_db():
-    f = open(db_file, 'w')
-    for x in db_data:
-        if db_type == 'txt':
+    if db_type == 'txt':
+        f = open(db_file, 'w')
+        for x in db_data:
             f.write('\n'.join(x)+'\n\n')
-        if db_type == 'csv':
+        f.close()
+    if db_type == 'csv':
+        f = open(db_file, 'w')
+        for x in db_data:
             f.write(';'.join(x)+'\n')
-    f.close()
+        f.close()
+    if db_type == 'sqlite':
+        f = sqlite3.connect(db_file)
+        create_users_table = """
+                            CREATE TABLE users (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            surname TEXT,
+                            name TEXT,
+                            phone TEXT,
+                            comment TEXT);
+                            """
+        delete_all_from_users = "DELETE FROM users;"
+
+        cursor = f.cursor()
+        cursor.execute(delete_all_from_users)
+        f.commit()
+        create_users = """
+                        INSERT INTO
+                            users (surname, name, phone, comment)
+                        VALUES 
+                        """ + ','.join(str(tuple(x)) for x in db_data) + ';'
+        cursor = f.cursor()
+        cursor.execute(create_users)
+        f.commit()
+
     return
 
 def changeRecord(num, lst):

@@ -1,11 +1,21 @@
 import os
 import sqlite3
 
+
 #переменная с текстом ошибки для возвращения по запросу
 error = ''
-db_type = '' #txt, csv, sql
+# переменная для хранения типа базы данных
+db_type = '' #txt, csv, sqlite
+# для хранения имени файла базы данных
 db_file = ''
+# для хранения данных считанных из базы данных
 db_data = []
+
+db_data_test = [['McMillan', 'Tricia', '267709', 'Section ZZ9 Plural Z Alpha'],
+                ['Dent', 'Arthur', '267709', 'Section ZZ9 Plural Z Alpha'],
+                ['Ford','Prefect', '1234567890', 'Betelgeuse'],
+                ['VeryVeryLongSurName', 'VeryVeryLongName', '3.14159265359', 'VeryVeryVeryVeryLongComment']]
+
 #возвращает текст ошибки
 def get_error() -> str:
     return error
@@ -18,54 +28,44 @@ def init(file_name: str) -> bool:
     global db_file
     global db_data
     global db_type
+
+    db_file = file_name
+    # проверка существования путии файла
     if not os.path.exists(file_name):
         print(f'File {file_name} not found.')
+        # если файл не найден, то спросить, создать или нет с тестовыми данными
         s = input('Create? (Y/N)')
         if s == 'Y' or s == 'y':
-            if os.path.splitext(file_name)[1] == '.txt':
-                f = open(file_name, 'w')
-                f.write('McMillan\nTricia\n267709\nSection ZZ9 Plural Z Alpha\n\n')
-                f.write('Dent\nArthur\n267709\nSection ZZ9 Plural Z Alpha\n\n')
-                f.write('Ford\nPrefect\n1234567890\nBetelgeuse\n\n')
-                f.write('VeryVeryLongSurName\nVeryVeryLongName\n3.14159265359\nVeryVeryVeryVeryLongComment\n\n')
-                f.close()
-            if os.path.splitext(file_name)[1] == '.csv':
-                f = open(file_name, 'w')
-                f.write('McMillan;Tricia;267709;Section ZZ9 Plural Z Alpha\n')
-                f.write('Dent;Arthur;267709;Section ZZ9 Plural Z Alpha\n')
-                f.write('Ford;Prefect;1234567890;Betelgeuse\n')
-                f.write('VeryVeryLongSurName;VeryVeryLongName;3.14159265359;VeryVeryVeryVeryLongComment\n')
-                f.close()
-            if os.path.splitext(file_name)[1] == '.sqlite':
-                f = sqlite3.connect(file_name)
-                create_users_table = """
-                                    CREATE TABLE users (
-                                        surname TEXT,
-                                        name TEXT,
-                                        phone TEXT,
-                                        comment TEXT);
-                                    """
-                cursor = f.cursor()
-                cursor.execute(create_users_table)
-                f.commit()
-                create_users = """
-                                INSERT INTO
-                                    users (surname, name, phone, comment)
-                                VALUES
-                                    ('McMillan', 'Tricia', '267709', 'Section ZZ9 Plural Z Alpha'),
-                                    ('Dent', 'Arthur', '267709', 'Section ZZ9 Plural Z Alpha'),
-                                    ('Ford', 'Prefect', '1234567890', 'Betelgeuse'),
-                                    ('VeryVeryLongSurName', 'VeryVeryLongName', '3.14159265359', 'VeryVeryVeryVeryLongComment');
-                                """
-                cursor = f.cursor()
-                cursor.execute(create_users)
-                f.commit()
-                cursor.close()
-                f.close()
-        else:
+            # в зависимости от расширения введенного имени файла переменные инициализаруются соответствующим кодом
+            match os.path.splitext(file_name):
+                case *path, '.txt':
+                    db_type = 'txt'
+                case *path, '.csv':
+                    db_type = 'csv'
+                case *path, '.sqlite':
+                    db_type = 'sqlite'
+                    f = sqlite3.connect(file_name)
+                    create_users_table = """
+                                        CREATE TABLE users (
+                                            surname TEXT,
+                                            name TEXT,
+                                            phone TEXT,
+                                            comment TEXT);
+                                        """
+                    cursor = f.cursor()
+                    cursor.execute(create_users_table)
+                    f.commit()
+                    cursor.close()
+                    f.close()
+                case _:
+                    error = 'Error file type.'
+                    return False
+            db_data = db_data_test
+            write_db()
+        else: # если файл не найден и пользователь отказался создавать новый
             error = 'File not found.'
-            return False
-    db_file = file_name
+            return False 
+    # читаем из файла записи
     match os.path.splitext(file_name):
         case *path, '.txt':
             db_type = 'txt'
@@ -84,6 +84,18 @@ def init(file_name: str) -> bool:
             return False
     return True
 
+# чтение записей из текстового файла, формат записей:
+# Фамилия_1
+# Имя_1
+# Телефон_1
+# Описание_1
+# 
+# Фамилия_2
+# Имя_2
+# Телефон_2
+# Описание_2
+# 
+
 def readDbFromTxt() -> list:
     db = []
     f = open(db_file, 'r')
@@ -99,6 +111,9 @@ def readDbFromTxt() -> list:
     f.close()
     return db
 
+# чтение записей из csv файла, формат записей:
+# Фамилия_1;Имя_1;Телефон_1;Описание_1
+# Фамилия_2;Имя_2;Телефон_2;Описание_2
 def readDbFromCsv() -> list:
     db = []
     f = open(db_file, 'r')
@@ -108,17 +123,20 @@ def readDbFromCsv() -> list:
     f.close()
     return db
 
+# чтение записей из файла базы данных
 def readDbFromSqlite() -> list:
     db = []
     f = sqlite3.connect(db_file)
     select_users = "SELECT * FROM users;"
     cursor = f.cursor()
     cursor.execute(select_users)
-    db = list(cursor.fetchall())
+    for x in cursor.fetchall():
+        db.append(list(x))
     cursor.close()
     f.close()
     return db
 
+# возвращает всю телефонную книгу
 def read_db() -> list:
     return db_data
 
@@ -135,16 +153,7 @@ def write_db():
         f.close()
     if db_type == 'sqlite':
         f = sqlite3.connect(db_file)
-        create_users_table = """
-                            CREATE TABLE users (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            surname TEXT,
-                            name TEXT,
-                            phone TEXT,
-                            comment TEXT);
-                            """
         delete_all_from_users = "DELETE FROM users;"
-
         cursor = f.cursor()
         cursor.execute(delete_all_from_users)
         f.commit()
@@ -156,38 +165,52 @@ def write_db():
         cursor = f.cursor()
         cursor.execute(create_users)
         f.commit()
-
     return
 
+# изменить запись по порядковому номеру
 def changeRecord(num, lst):
+    # изменить запись
     db_data[num-1] = lst
-    write_db()
-    return
-    
-def deleteRecord(num):
-    del db_data[num-1]
+    # записать в файл
     write_db()
     return
 
+# удалить запись из телефонной книги по порядковому номеру    
+def deleteRecord(num):
+    # удалить запись из базы
+    del db_data[num-1]
+    # записать в файл
+    write_db()
+    return
+
+# вставляет запись в телефонную книгу
 def insertRecord(lst):
+    # поле фамилия или имя обязательно должно быть
     if lst[0] =='' and lst[1] == '':
         return
+    # проверка, что запись уже есть, чтобы не задваивались
     for x in db_data:
         if x[0] == lst[0] and x[1] == lst[1] and x[2] == lst[2] and x[3] == lst[3]:
             return
+    # добавить запись в базу
     db_data.append(lst)
+    # записать базу в файл
     write_db()
     return
 
+# сортирует по полю фамилия
 def sortSurname(e):
     return e[0]
 
+# сортирует по полю имя
 def sortName(e):
     return e[1]
 
+# сортирует по полю комментарий
 def sortComment(e):
     return e[3]
 
+# функция сортировки записей
 def sortRecord(sortOrder, sortField):
     if sortField == 's': sortFunc = sortSurname
     if sortField == 'n': sortFunc = sortName
@@ -195,8 +218,10 @@ def sortRecord(sortOrder, sortField):
     db_data.sort(reverse=sortOrder, key=sortFunc)
     return
 
+# функция для получения данных конкретной записи, указанной пономеру
 def getRecord(num) -> list:
     return db_data[num-1]
 
+# функция для получения количества записей в телефонной книге
 def getNumberOfRecords() -> int:
     return len(db_data)

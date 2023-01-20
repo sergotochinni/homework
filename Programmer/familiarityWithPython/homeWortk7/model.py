@@ -225,3 +225,37 @@ def getRecord(num) -> list:
 # функция для получения количества записей в телефонной книге
 def getNumberOfRecords() -> int:
     return len(db_data)
+
+def export(ts: str):
+    global db_file
+    global db_type
+
+    db_file_org = db_file
+    db_type_org = db_type
+    db_file = os.path.splitext(db_file)[0]
+    match ts:
+        case 't':
+            db_type = 'txt'
+            db_file += '.txt'
+        case 'c':
+            db_type = 'csv'
+            db_file += '.csv'
+        case 's':
+            db_type = 'sqlite'
+            db_file += '.sqlite'
+            f = sqlite3.connect(db_file)
+            create_users_table = """
+                                CREATE TABLE users (
+                                surname TEXT,
+                                name TEXT,
+                                phone TEXT,
+                                comment TEXT);
+                                """
+            cursor = f.cursor()
+            cursor.execute(create_users_table)
+            f.commit()
+            cursor.close()
+            f.close()
+    write_db()
+    db_file = db_file_org
+    db_type = db_type_org

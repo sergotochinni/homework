@@ -16,10 +16,10 @@ def init():
 
 def run():
     # получаем команду от пользователя
-    cmd = view.getCommand()
+    cm = view.getCommand()
     # цикл выполняется пока не будет введен символ q или Q
-    while cmd not in ['q', 'Q']:
-        match cmd:
+    while cm not in ['q', 'Q']:
+        match cm:
             # просмотреть одну запись
             case 'v'|'V':
                 # получить количество записей в телефонной книге
@@ -75,8 +75,12 @@ def run():
                 sField = view.getSortField()
                 # отсортировать
                 model.sortRecord(sOrder, sField)
+            case 'e'|'E':
+                ts = view.getExport()
+                if ts not in ['q', 'Q']:
+                    model.export(ts)
         # вывести на экран телефонную книгу
         view.print_pb(model.read_db())
-        cmd = view.getCommand()
+        cm = view.getCommand()
     
             

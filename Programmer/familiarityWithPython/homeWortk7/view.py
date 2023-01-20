@@ -30,8 +30,8 @@ def print_pb(lst):
 # получение команды от пользователя    
 def getCommand() -> str:
     while True: # ждем пока не введет нормальную команду
-        st = input('Enter command (v - view, c - change, i - insert, d - delete, s - sort, q - quit): ')
-        if st in ['v', 'c', 'i', 'd', 's', 'q', 'V', 'C', 'I', 'D', 'S', 'Q']:
+        st = input('Enter command (v - view, c - change, i - insert, d - delete, s - sort, e - export, q - quit): ')
+        if st in ['v', 'c', 'i', 'd', 's', 'e', 'q', 'V', 'C', 'I', 'D', 'S', 'E', 'Q']:
             return st
 
 # получение от пользователя номера записи, для функций изменения или удаления
@@ -81,3 +81,9 @@ def getSortField() -> str:
     if n not in ['s', 'n', 'c']:
         n = 's'
     return n
+
+def getExport() -> str:
+    while True: # ждем пока не введет нормальную команду
+        st = input('Enter type for export (t - txt, c - csv, s - sql, q - quit): ')
+        if st in ['t', 'c', 's', 'q', 'T', 'C', 'S', 'Q']:
+            return st

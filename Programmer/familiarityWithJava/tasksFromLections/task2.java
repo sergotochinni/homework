@@ -2,7 +2,6 @@ package Programmer.familiarityWithJava.tasksFromLections;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.Arrays;
 
 public class task2 {
     /* 2. Даны два файла, в каждом из которых находится запись многочлена.

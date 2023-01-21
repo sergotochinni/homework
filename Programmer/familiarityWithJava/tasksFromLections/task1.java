@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.Scanner;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.*;
 
 public class task1 {
     /*
@@ -11,7 +12,15 @@ public class task1 {
      * образом список коэффициентов (значения от 0 до 100)
      * многочлена многочлен степени k.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SecurityException, IOException {
+        Logger lg = Logger.getLogger(task1.class.getName());
+        lg.setLevel(Level.INFO);
+        FileHandler fh = new FileHandler("log.txt");
+        lg.addHandler(fh);
+        SimpleFormatter sf = new SimpleFormatter();
+        fh.setFormatter(sf);
+        lg.info("hello");
+        lg.warning("wow");
 
         Scanner iScanner = new Scanner(System.in);
         System.out.print("Enter power: ");
